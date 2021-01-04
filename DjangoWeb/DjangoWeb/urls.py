@@ -7,7 +7,8 @@ from django.urls import path
 from django.contrib import admin
 from django.contrib.auth.views import LoginView, LogoutView
 from app import forms, views
-
+from django.conf.urls import include
+admin.autodiscover()
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -25,6 +26,21 @@ urlpatterns = [
              }
          ),
          name='login'),
-    path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
+    # ログオフ画面非表示の場合（ルートurlへの遷移）
+    #path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
+    # ログオフ画面表示する場合
+    path('logout/',
+         LogoutView.as_view
+         (
+             template_name='app/loggedoff.html'
+         ),
+         name='logout'),
+    path('logout/',
+            LogoutView,
+            {
+                'template_name': 'app/loggedoff.html',
+                # 'next_page': '/',
+            },
+            name='logout'),
     path('admin/', admin.site.urls),
 ]
